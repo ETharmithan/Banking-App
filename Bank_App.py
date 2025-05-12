@@ -38,12 +38,12 @@ def save_user_details():
         with open("Customer_Personal_Details.txt",'r') as file:
             last_line=file.readlines()[-1]
             last_id=last_line.split(" | ")[0].strip()
-            new_id=(f"C{str(int(last_id[1:])+1)}") #Auto Generate Customer ID
+            new_id=(f"C{str(int(last_id[1:])+1)}") 
             with open("Customer_Personal_Details.txt","a") as file1:
                 file1.write(f"{new_id} | {customer_details['firstname']} | {customer_details['lastname']} | {customer_details['nic']} | {customer_details['dob']} | {customer_details['address']} | {customer_details['email']} | {customer_details['phone']} | {customer_details['gender']} | {customer_details['job']}\n")
                 print(f"{customer_details['lastname']} details saved successfully.")
     except FileNotFoundError:
-        with open("Customer_Personal_Details.txt","w") as file1: #First Customer ID Create
+        with open("Customer_Personal_Details.txt","w") as file1: 
             file1.write(f"C1001 | {customer_details['firstname']} | {customer_details['lastname']} | {customer_details['nic']} | {customer_details['dob']} | {customer_details['address']} | {customer_details['email']} | {customer_details['phone']} | {customer_details['gender']} | {customer_details['job']}\n")
             print(f"{customer_details['lastname']} details saved successfully.")
 
@@ -63,14 +63,14 @@ def create_account():
         with open("Accounts.txt","r") as file:
             Last_line=file.readlines()[-1]
             Last_ID=Last_line.split(" | ")[1]
-            New_ID=(f"A{str(int(Last_ID[1:])+1)}") #Auto Generate Account ID
+            New_ID=(f"A{str(int(Last_ID[1:])+1)}") 
             with open("Accounts.txt","a") as file:
                 file.write(f"{customer_id_02} | {New_ID} | {user_name} | {user_password} | {user_initialbalnce}\n")
                 print(f"{user_name} Accountant Create Successfully.")
     except FileNotFoundError:
         New_ID="A1001"
         with open("Accounts.txt","w") as file:
-            file.write(f"{customer_id_02} | {New_ID} | {user_name} | {user_password} | {user_initialbalnce}\n") ##First Account ID Create
+            file.write(f"{customer_id_02} | {New_ID} | {user_name} | {user_password} | {user_initialbalnce}\n") 
             print(f"{user_name} Accountant Create Successfully.")
     with open("Transaction_History.txt","a") as file2:
         file2.write(f"{customer_id_02} | {New_ID} | {user_initialbalnce} | Deposit | {user_initialbalnce}\n")
@@ -81,29 +81,35 @@ def create_account():
 def Withdraw():
     with open("Accounts.txt","r") as file:
         lines=file.readlines()
-    input_account_no=input("Enter your account number: ") #Identify User.
+    input_account_no=input("Enter your account number: ") 
     change_data=[]
     for line in lines:
         if input_account_no in line.strip().split(" | "):
             datas=line.strip().split(" | ")
             print(f"Hi, {datas[2]}")
             print(f"Your current balance is {datas[4]}")
-            try:
-                Amount=float(input("Please enter the amount: "))
-                if Amount>0:
-                    if Amount<float(datas[-1]):
-                        New_balance=float(datas[-1])-Amount
-                        print(f"{datas[2]}, you have successfully withdrawn {Amount}.")
-                        print(f"Your new balance is {New_balance}.") 
-                        change_data.append(f"{datas[0]} | {datas[1]} | {datas[2]} | {datas[3]} | {New_balance}\n")
-                        with open("Transaction_History.txt", "a") as file1:
-                            file1.write(f"{datas[0]} | {datas[1]} | {Amount} | Withdraw | {New_balance}\n")
-                    else:
-                        print(f"Reminder: Your current balance is {datas[-1]}")
+            while True:
+                Confirmation_password=input("Enter the user password: ")
+                if datas[3]==Confirmation_password:
+                    try:
+                        Amount=float(input("Please enter the amount: "))
+                        if Amount>0:
+                            if Amount<float(datas[-1]):
+                                New_balance=float(datas[-1])-Amount
+                                print(f"{datas[2]}, you have successfully withdrawn {Amount}.")
+                                print(f"Your new balance is {New_balance}.") 
+                                change_data.append(f"{datas[0]} | {datas[1]} | {datas[2]} | {datas[3]} | {New_balance}\n")
+                                with open("Transaction_History.txt", "a") as file1:
+                                    file1.write(f"{datas[0]} | {datas[1]} | {Amount} | Withdraw | {New_balance}\n")
+                                    break
+                            else:
+                                print(f"Reminder: Your current balance is {datas[-1]}")
+                        else:
+                            print("Please enter positive numbers only: ")
+                    except ValueError:
+                        print("Please make sure to enter the amount using numbers only!")
                 else:
-                    print("Please enter positive numbers only: ")
-            except ValueError:
-                print("Please make sure to enter the amount using numbers only!")
+                    print("Recheck your password")
         else:
             change_data.append(line)
         with open("Accounts.txt", "w") as file2:
@@ -113,26 +119,32 @@ def Withdraw():
 def Deposit():
     with open("Accounts.txt", "r") as file:
         lines=file.readlines()
-    account_number_input=input("Enter your account number: ") #Identify User
+    account_number_input=input("Enter your account number: ") 
     Change_data=[]
     for line in lines:
         if account_number_input in line.strip().split(" | "):
             Datas=line.strip().split(" | ")
             print(f"Hi, {Datas[2]}")
             print(f"Your current balance is {Datas[4]}")
-            try:
-                Amount=float(input("Please enter the amount: "))
-                if Amount>0:
-                    new_balance=float(Datas[-1])+Amount
-                    print(f"{Datas[2]}, you have successfully deposited {Amount}.")
-                    print(f"Your new balance is {new_balance}.")
-                    Change_data.append(f"{Datas[0]} | {Datas[1]} | {Datas[2]} | {Datas[3]} | {new_balance}\n")
-                    with open("Transaction_History.txt","a") as file1:
-                        file1.write(f"{Datas[0]} | {Datas[1]} | {Amount} | Deposit | {new_balance}\n")
+            while True:
+                confirmation_password=input("Enter the user password: ")
+                if Datas[3]==confirmation_password:
+                    try:
+                        Amount=float(input("Please enter the amount: "))
+                        if Amount>0:
+                            new_balance=float(Datas[-1])+Amount
+                            print(f"{Datas[2]}, you have successfully deposited {Amount}.")
+                            print(f"Your new balance is {new_balance}.")
+                            Change_data.append(f"{Datas[0]} | {Datas[1]} | {Datas[2]} | {Datas[3]} | {new_balance}\n")
+                            with open("Transaction_History.txt","a") as file1:
+                                file1.write(f"{Datas[0]} | {Datas[1]} | {Amount} | Deposit | {new_balance}\n")
+                                break
+                        else:
+                            print("Please enter positive amount only: ")
+                    except ValueError:
+                        print("Please make sure to enter the amount using numbers only!")
                 else:
-                    print("Please enter positive numbers only: ")
-            except ValueError:
-                print("Please make sure to enter the amount using numbers only!")
+                    print("Recheck your password")
         else:
             Change_data.append(line)
         with open("Accounts.txt", "w") as file2:
@@ -148,129 +160,137 @@ def Customer_Transaction_History():
     for line in lines:
         if enter_account_id in line.strip().split(" | "):
             records=line.strip().split(" | ")
-            print(records)
-            # customer_history.append(f"{records[0]} | {records[1]} | {records[2]} | {records[3]} | {records[4]}")
-            # print(customer_history)
-Customer_Transaction_History()
+            print(f"{records[1]} | {records[2]} | {records[3]} | {records[4]}")
 
-
-
-
-
-'''
-#Check Balance=================================================================================
-def check_balance():
+#Show Balance==================================================================================
+def Show_Balance():
     with open("Accounts.txt", "r") as file:
-        get_Account=file.readlines()
-        for account in get_Account:
-            account_no=account.split(" | ")[1]
-            while True:
-                Account_No=input("Enter the Account Number: ")
-                if account_no==Account_No:
-                    print(f"Your Current Balance is ")
-                    break
-                else:
-                    print("Your Account Number is Insufficient. Please Check Your Account Number!")
-# check_balance()
-#Delete========================================================================================
-#Delete Account
-def Delete_Account():
-    with open("Accounts.txt","r") as file:
-        get_account=file.readlines()
-        for account_01 in get_account:
-            delete_account_id=account_01.split(" | ")[1]
-            while True:
-                Delete_account_id=input("Enter Delete Id: ")
-                if delete_account_id==Delete_account_id:
-                    print("Successfully Remove.")
-                    break
-                else:
-                    print("Your Account Number is Insufficient. Please Check Your Account Number!")
-# Delete_Account()
+        lines=file.readlines()
+    Enter_account_id=input("Enter your account ID: ")
+    for line in lines:
+        if Enter_account_id in line.strip().split(" | "):
+            print(f"Hi, {line.strip().split(" | ")[2]}")
+            print(f"Your balance is {line.strip().split(" | ")[-1]}.")
 
 #Customer Menu=================================================================================
-def customer_menu():
-    print("---------Welcome To Mini Bank---------")
-    print("1.Deposit Money")
-    print("2.Withdraw Money")
-    print("3.Check Balance")
-    print("4.Transaction History")
-    print("5.Exit")
-    while True:    
-        try:
-            choose=int(input("Enter The Number Only(1 to 5): "))
-            if choose==1:
-                Deposit()
-            elif choose==2:
-                Withdraw()
-            elif choose==3:
-                check_balance()
-            elif choose==4:
-                Transaction_History()
-            elif choose==5:
-                print("Thanks for coming!")
-                exit()
-            else:
-                print("You can Choice only (1 to 5): ")
-        except ValueError:
-            print("Enter  Only Numbers!")
-# customer_menu()
-
-#Check User====================================================================================
-def Check_User():
-    # with open("Accounts.txt", "r") as username_password:
-    #     get_username_password = username_password.readlines()
-    # while True:
-    #     user_name = input("Enter your user name: ")
-    #     password = input("Enter your password: ")
-    #     for i in get_username_password:
-    #         get_user = i.split("|")[2].strip()
-    #         get_password = i.split("|")[3].strip()
-    #         get_customer_id = i.split("|")[0].strip()
-    #         get_account_id = i.split("|")[1].strip()
-    #         if user_name == get_user and password == get_password:
-    #             customer_menu(get_customer_id,get_account_id,get_user,get_password)
-    
-
-                
-
+def Customer_Menu():
+    with open("Accounts.txt", "r") as file:
+        lines=file.readlines()
+    customer_id=input("Enter your Customer ID: ")
+    for line in lines:
+        if customer_id in line.strip().split(" | "):
+            while True:
+                print(f"---------Welcome To Mini Bank---------\n-----------Have a Great Day-----------\nHi,{line.strip().split(" | ")[2]}\n")
+                print(f"Customer ID: {line.strip().split(" | ")[0]}\nAccount ID: {line.strip().split(" | ")[1]}\nHow can I help you?\n")
+                print("1.Deposit Money")
+                print("2.Withdraw Money")
+                print("3.Show Balance")
+                print("4.Transaction History")
+                print("5.Exit")    
+                try:
+                    choose=int(input("Enter the number only (1 to 5): "))
+                    if choose>0:
+                        if choose==1:
+                            Deposit()
+                        elif choose==2:
+                            Withdraw()
+                        elif choose==3:
+                            Show_Balance()
+                        elif choose==4:
+                            Customer_Transaction_History()
+                        elif choose==5:
+                            print("Thank you for choosing us!")
+                            break
+                        else:
+                            print("Please select only between 1 and 5.")
+                    else:
+                        print("Please enter positive numbers only")
+                except ValueError:
+                    print("Please enter numbers only!")
 
 #Admin Menu====================================================================================
 def Admin_Menu():
     while True:
-        print("Hi, Admin")
-        print("1.Save User Details")
-        print("2.Account Create")
-        print("")
-        print("")
-        print("")
-        print("")
-        print("")
-
-
-
-#Menu==========================================================================================
-def Menu():
-    while True:
-        print("---------Welcome to Mini Bank!---------")
-        print("1.Admin login.")
-        print("2.Customer login.")
-        print("3.Exit.")
+        print(f"---------Welcome To Mini Bank---------\n-----------Have a Great Day-----------\nHi, Admin\nHow can I help you?\n")
+        print("1.Customer Register")
+        print("2.Create Account")
+        print("3.Deposit")
+        print("4.Withdraw")
+        print("5.Transaction History")
+        print("6.Check Balance")
+        # print("7.Back to MainMenu")
+        print("7.Exit")
         try:
-            Choose=int(input("Choose the Numbers(1 to 3): "))
-            if Choose>0 and Choose<4:   
-                if Choose==1:
-                    Check_User()
-                    Admin_Menu()
-                    pass
-                elif Choose==2:
-                    Check_User()
-                    customer_menu()
-                elif Choose==3:
-                    print("Thanks For UsingSystem!")
-                    exit()
+            choose=int(input("Enter the number only (1 to 7): "))
+            if choose>0:
+                if choose==1:
+                    save_user_details()
+                elif choose==2:
+                    create_account()
+                elif choose==3:
+                    Deposit()
+                elif choose==4:
+                    Withdraw()
+                elif choose==5:
+                    Customer_Transaction_History()
+                elif choose==6:
+                    Show_Balance()
+                # elif choose==7:
+                #     print("Going to Mainmenu👈")
+                #     break  
+                elif choose==7:
+                    print("Thank you for choosing us!")
+                    break
+                else:
+                    print("Please select only between 1 and 7!")
             else:
-                print("Only Type Positive Numbers! and  Choose 1 to 3")
+                print("Please enter positive numbers only")
         except ValueError:
-            print("Only choose Numbers!")
-Menu()'''
+            print("Please enter numbers only!")
+        
+#Choose User===================================================================================
+def users():
+    while True:
+        print("========================💱Welcome-To-Mini-Banking-System💱=========================")
+        print("1.Admin Login")
+        print("2.Customer Login")
+        print("3.Exit")
+        try:
+            select=int(input("Choose the number (1 to 3): "))
+            if select>0 and select<4:
+                if select==1:
+                    print("Opening Admin Menu👉...")
+                    admin_username="Admin"
+                    admin_password="Admin143"
+                    input_admin_name=input("Enter the Admin name: ")
+                    input_admin_password=input("Enter the Admin Password: ")
+                    if admin_username==input_admin_name and admin_password==input_admin_password:
+                        Admin_Menu()
+                        break
+                    else:
+                        print("Please Check your Username or Userpassword!")
+                elif select==2:
+                    print("Opening Customer Menu👉...")
+                    try:
+                        with open("Accounts.txt", "r") as file:
+                            lines=file.readlines()
+                    except FileNotFoundError:
+                        print("Invalid account")
+                    customer_username=input("Enter the User name: ")
+                    customer_password=input("Enter the Password: ")
+                    for line in lines:
+                        datas=line.strip().split(" | ")
+                        if len(datas)>=5:
+                            if datas[2]==customer_username and datas[3]==customer_password:
+                                print(f"{datas[2]} Login successfully.")
+                                Customer_Menu()
+                        else:
+                            print("Invalid Username or Password!")
+                else:
+                    print("Thank you for choosing us!")
+                    break
+            else:
+                print("Please enter only the positive number 1 to 3!")
+        except ValueError:
+            print("Please enter numbers only!")
+users()
